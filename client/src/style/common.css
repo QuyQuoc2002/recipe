@@ -1,0 +1,15 @@
+.text-color {
+  color: #234626;
+}
+
+.sidebar .navbar .navbar-nav .nav-link.active {
+  color: #2f6233;
+  background: #ffffff;
+  border-color: #234626;
+}
+
+.sidebar .navbar .navbar-nav .nav-link :hover {
+  color: #2f6233;
+  background: #ffffff;
+  border-color: #234626;
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "messageCd": "0001",
+    "type": "S",
+    "content": "Message success demo {0}"
+  },
+  {
+    "messageCd": "2001",
+    "type": "I",
+    "content": "Message info demo {0}"
+  },
+  {
+    "messageCd": "4001",
+    "type": "W",
+    "content": "Message warning demo {0}"
+  },
+  {
+    "messageCd": "6001",
+    "type": "E",
+    "content": "Message error demo {0}"
+  }
+]
