@@ -13,3 +13,19 @@
   background: #ffffff;
   border-color: #234626;
 }
+
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Giới hạn số dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Giới hạn số dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

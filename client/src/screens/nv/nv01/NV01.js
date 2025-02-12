@@ -1,133 +1,254 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import httpRequest from "../../../request/httpRequest";
-import NV02 from "../nv02/NV02";
-import NV03 from "../nv03/NV03";
+import Select from "react-select";
 import ToastService from "../../../common/service/ToastService";
+import httpRequest from "../../../request/httpRequest";
+import { Link } from "react-router-dom";
+
+const filterDefault = {
+  levelId: null,
+  catId: null,
+  methId: null,
+};
+
+const listFilterDefault = {
+  level: null,
+  cat: null,
+  meth: null,
+};
+
+const searchDefault = "";
 
 const NV01 = () => {
   //---------------------------------------------------------------------------------------------------
-  const [showNV02, setShowNV02] = useState(false);
-  const [showNV03, setShowNV03] = useState(false);
-  const [paramNV03, setParamNV03] = useState({});
-  const [staffList, setStaffList] = useState([]);
-  const [search, setSearch] = useState("");
+  const [listDish, setListDish] = useState([]);
+  const [listFilter, setListFilter] = useState(listFilterDefault);
+  const [filter, setFilter] = useState(filterDefault);
+  const [search, setSearch] = useState(searchDefault);
 
   //---------------------------------------------------------------------------------------------------
   useEffect(() => {
-    fetchStaffList();
+    getAllDish();
+    getAllFilter();
   }, []);
 
-  const fetchStaffList = async () => {
+  const getAllDish = async () => {
     try {
-      const response = await httpRequest.post(`/nv/nv01/get-all-staff`);
-      setStaffList((prev) => response.data);
+      const response = await httpRequest.post(`/nv/nv01/get-all-dish`, {
+        search,
+      });
+      setListDish((prev) => response.data);
+      setFilter((prev) => filterDefault);
     } catch (error) {
       console.log(error);
       ToastService.showToast("Lỗi hệ thống liện hệ nhà phát triển", "E");
     }
   };
 
-  const handleShowNV02 = () => {
-    setShowNV02(true);
+  const getAllFilter = async () => {
+    try {
+      const response = await httpRequest.post(`/nv/nv01/get-all-filter`, {});
+      setListFilter((prev) => response.data);
+    } catch (error) {
+      console.log(error);
+      ToastService.showToast("Lỗi hệ thống liện hệ nhà phát triển", "E");
+    }
   };
 
-  const handleCloseNV02 = async () => {
-    setShowNV02(false);
-    await fetchStaffList();
+  const valueChangeFilter = (prop, value) => {
+    setFilter((prev) => ({
+      ...prev,
+      [prop]: value,
+    }));
   };
 
-  const handleDismissNV02 = () => {
-    setShowNV02(false);
-  };
-  const handleShowNV03 = (account) => {
-    setParamNV03((prev) => ({ ...prev, account }));
-    setShowNV03(true);
+  const searchValueChange = (value) => {
+    setSearch((prev) => value);
   };
 
-  const handleCloseNV03 = async () => {
-    setParamNV03((prev) => ({}));
-    setShowNV03(false);
-    await fetchStaffList();
+  const handleCancelFilter = () => {
+    setFilter((prev) => filterDefault);
   };
 
-  const handleDismissNV03 = () => {
-    setParamNV03((prev) => ({}));
-    setShowNV03(false);
+  const handleSearch = () => {
+    getAllDish();
   };
 
   //---------------------------------------------------------------------------------------------------
   return (
     <div className="container-fluid pt-2 px-2">
       <div className="bg-light rounded mx-0 p-4">
-        <div className="mb-4 d-flex">
-          <h2 className="text-primary">DANH SÁCH NHÂN VIÊN</h2>
-          <button
-            className="btn btn-primary text-white rounded-pill ms-2"
-            onClick={() => handleShowNV02()}
-          >
-            <i className="fas fa-plus"></i> THÊM NHÂN VIÊN
-          </button>
-          {showNV02 && (
-            <NV02
-              show={showNV02}
-              handleClose={() => handleCloseNV02()}
-              handleDismiss={() => handleDismissNV02()}
-            ></NV02>
-          )}
+        <div className="row">
+          <div className="col-11 ">
+            <input
+              value={search}
+              onInput={(e) => searchValueChange(e.target.value)}
+              type="text"
+              class="form-control"
+              placeholder="Tìm kiếm..."
+            />
+          </div>
+          <div className="col-1">
+            <button
+              type="button"
+              className="btn btn-primary w-100"
+              onClick={() => handleSearch()}
+            >
+              <i className="fas fa-search"></i> Tìm
+            </button>
+          </div>
         </div>
-        <div className="mb-3">
-          <label htmlFor="searchValue" className="form-label">
-            Tìm kiếm theo tên, mã nhân viên
-          </label>
-          <input
-            type="email"
-            className="form-control"
-            id="searchValue"
-            value={search}
-            onInput={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <table className="table table-hover table-striped">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Mã Nhân viên</th>
-              <th scope="col">Họ tên</th>
-              <th scope="col">Số điện thoại</th>
-              <th scope="col">Email</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {staffList
-              .filter(
-                (item) =>
-                  item.fullname.toLowerCase().includes(search.toLowerCase()) ||
-                  item.account.toLowerCase().includes(search.toLowerCase())
-              )
-              .map((item, idx) => (
-                <tr key={idx}>
-                  <th scope="row">{idx + 1}</th>
-                  <td>
-                    <Link onClick={() => handleShowNV03(item.account)}>
-                      {item.account}
-                    </Link>
-                  </td>
-                  <td>{item.fullname}</td>
-                  <td>{item.mobile}</td>
-                  <td>{item.email}</td>
-                </tr>
+      </div>
+
+      <div className="row mt-2">
+        <div className="col-3 pe-1">
+          <div className="bg-light rounded p-4">
+            <button
+              className="btn btn-secondary w-100"
+              onClick={handleCancelFilter}
+            >
+              Hủy bộ lọc
+            </button>
+            <hr></hr>
+            <div className="d-flex flex-wrap gap-2 mb-2">
+              {listFilter?.level?.map((item) => (
+                <div key={item.id}>
+                  <input
+                    type="radio"
+                    name="level"
+                    class="btn-check"
+                    id={`level${item.id}`}
+                    value={item.id}
+                    onChange={(e) =>
+                      valueChangeFilter("levelId", Number(e.target.value))
+                    }
+                    checked={filter.levelId === item.id}
+                  />
+                  <label
+                    class="btn btn-outline-primary"
+                    htmlFor={`level${item.id}`}
+                  >
+                    {item.name}
+                  </label>
+                </div>
               ))}
-          </tbody>
-        </table>
-        {showNV03 && (
-          <NV03
-            param={paramNV03}
-            show={showNV03}
-            handleClose={handleCloseNV03}
-            handleDismiss={handleDismissNV03}
-          />
-        )}
+            </div>
+            <hr></hr>
+            <div className="d-flex flex-wrap gap-2 mb-2">
+              {listFilter?.cat?.map((item) => (
+                <div className="">
+                  <input
+                    type="radio"
+                    name="cat"
+                    class="btn-check"
+                    id={`cat${item.id}`}
+                    value={item.id}
+                    onChange={(e) =>
+                      valueChangeFilter("catId", Number(e.target.value))
+                    }
+                    checked={filter.catId === item.id}
+                  />
+                  <label
+                    class="btn btn-outline-primary"
+                    htmlFor={`cat${item.id}`}
+                  >
+                    {item.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <hr></hr>
+            <div className="d-flex flex-wrap gap-2 mb-2">
+              {listFilter?.meth?.map((item) => (
+                <div className="">
+                  <input
+                    type="radio"
+                    name="cametht"
+                    class="btn-check"
+                    id={`meth${item.id}`}
+                    value={item.id}
+                    onChange={(e) =>
+                      valueChangeFilter("methId", Number(e.target.value))
+                    }
+                    checked={filter.methId === item.id}
+                  />
+                  <label
+                    class="btn btn-outline-primary"
+                    htmlFor={`meth${item.id}`}
+                  >
+                    {item.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+            <hr></hr>
+            <div>
+              <Select
+                className="border border-primary rounded text-primary"
+                isMulti
+                placeholder="Nguyên liệu..."
+                options={[
+                  { value: "chocolate", label: "Chocolate" },
+                  { value: "strawberry", label: "Strawberry" },
+                  { value: "vanilla", label: "Vanilla" },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="col-9 ps-1">
+          <div className="bg-light rounded p-4">
+            <div className="row ">
+              {listDish
+                ?.filter(
+                  (item) => !filter.levelId || item.levelId === filter.levelId
+                )
+                ?.filter((item) => !filter.catId || item.catId === filter.catId)
+                ?.filter(
+                  (item) => !filter.methId || item.methId === filter.methId
+                )
+                ?.map((dish, idx) => (
+                  <div key={idx} className="col-4">
+                    <div class="card">
+                      <img
+                        src={dish.thumbnail}
+                        class="card-img-top"
+                        alt="..."
+                      />
+                      <div class="card-body">
+                        <Link
+                          className="text-decoration-none"
+                          to={`/nv/nv02/${dish.id}`}
+                        >
+                          <h5
+                            class="card-title text-truncate-2"
+                            style={{ minHeight: "50px" }}
+                          >
+                            {dish.name}
+                          </h5>
+                        </Link>
+                        <p
+                          className="text-truncate-3"
+                          style={{ minHeight: "75px" }}
+                        >
+                          {dish.des}
+                        </p>
+                        <div className="d-flex gap-2">
+                          <div>
+                            <i className="far fa-clock text-primary"></i>{" "}
+                            {dish.time} Phút
+                          </div>
+                          <div>
+                            <i className="fas fa-sort-amount-up text-primary"></i>{" "}
+                            {dish.level}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

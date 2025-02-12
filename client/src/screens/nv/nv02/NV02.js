@@ -1,132 +1,103 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Modal } from "bootstrap";
-import httpRequest from "../../../request/httpRequest";
-import ToastService from "../../../common/service/ToastService";
-import NV02Service from "./NV02Service";
-
-const staffBlank = {
-  fullname: "",
-  mobile: "",
-  birthday: "",
-  email: "",
-};
-
-const NV02 = ({ handleClose, handleDismiss }) => {
-  //---------------------------------------------------------------------------------------------------
-  const [staff, setStaff] = useState(staffBlank);
-
+const NV02 = () => {
   //---------------------------------------------------------------------------------------------------
 
-  const valueChangeStaff = (prop, value) => {
-    setStaff((prev) => ({
-      ...prev,
-      [prop]: value,
-    }));
-  };
-
-  const handleAddStaff = async () => {
-    const messageValidateAddStaff = NV02Service.validateAddStaff(staff);
-    if (messageValidateAddStaff.trim()) {
-      ToastService.showToast(messageValidateAddStaff, "W");
-      return;
-    }
-    try {
-      const response = await httpRequest.post(`/nv/nv02/add-staff`, staff);
-      handleClose();
-      ToastService.showToast(
-        `Đã thêm ${response.data.fullname} có account là ${response.data.account}`,
-        "S"
-      );
-    } catch (error) {
-      console.log(error);
-      ToastService.showToast("Lỗi hệ thống liện hệ nhà phát triển", "E");
-    }
-  };
+  //---------------------------------------------------------------------------------------------------
 
   //---------------------------------------------------------------------------------------------------
   return (
-    <div
-      className={`modal fade show d-block`}
-      style={{ background: "rgba(0,0,0,0.5)" }}
-      data-bs-backdrop="static"
-    >
-      <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5">Thêm nhân viên</h1>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={() => handleDismiss()}
-            ></button>
+    <div className="container-fluid pt-2 px-2">
+      <div className="bg-light rounded mx-0">
+        <div className="row m-auto">
+          <div className="col-6 p-0">
+            <img
+              className="rounded-start w-100"
+              src="https://assets.unileversolutions.com/recipes-v3/254605-default.jpg"
+            ></img>
           </div>
-          <div className="modal-body">
-            <div className="row">
-              <div className="col-6 mb-2">
-                <label htmlFor="fullname" className="form-label m-0">
-                  Họ tên <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="fullname"
-                  value={staff.fullname}
-                  onInput={(e) => valueChangeStaff("fullname", e.target.value)}
-                />
-              </div>
-              <div className="col-6 mb-2">
-                <label htmlFor="mobile" className="form-label m-0">
-                  Số điện thoại <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="mobile"
-                  value={staff.mobile}
-                  onInput={(e) => valueChangeStaff("mobile", e.target.value)}
-                />
-              </div>
-              <div className="col-6 mb-2">
-                <label htmlFor="birthday" className="form-label m-0">
-                  Ngày sinh
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="birthday"
-                  value={staff.birthday}
-                  onInput={(e) => valueChangeStaff("birthday", e.target.value)}
-                />
-              </div>
-              <div className="col-6 mb-2">
-                <label htmlFor="email" className="form-label m-0">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  value={staff.email}
-                  onInput={(e) => valueChangeStaff("email", e.target.value)}
-                />
+          <div className="col-6 d-flex align-items-center ">
+            <div>
+              <h2 className="text-primary fw-bold">
+                Udon Xào Sốt Bơ Đậu Phộng
+              </h2>
+              <p>
+                Cách làm Udon Xào Sốt Bơ Đậu Phộng với Hạt nêm Knorr Thịt thăn,
+                Xương ống và Tuỷ cho món ăn tròn vị đậm đà. Viết nhận{" "}
+              </p>
+              <div className="row text-primary">
+                <div className="col-3">
+                  <div className="bg-info bg-opacity-25 w-100 rounded p-2 d-flex flex-column align-items-center">
+                    <i class="fas fa-tasks fs-1 fw-bold"></i>
+                    <div className="fs-5 fw-bold">Món chính</div>
+                    <div className="fs-6">Loại</div>
+                  </div>
+                </div>
+                <div className="col-3">
+                  <div className="bg-info bg-opacity-25 w-100 rounded p-2 d-flex flex-column align-items-center">
+                    <i class="fas fa-sort-amount-up fs-1 fw-bold"></i>
+                    <div className="fs-5 fw-bold">Khó</div>
+                    <div className="fs-6">Độ Khó</div>
+                  </div>
+                </div>
+                <div className="col-3">
+                  <div className="bg-info bg-opacity-25 w-100 rounded p-2 d-flex flex-column align-items-center">
+                    <i class="far fa-clock fs-1 fw-bold"></i>
+                    <div className="fs-5 fw-bold">60 Phút</div>
+                    <div className="fs-6">Thời gian</div>
+                  </div>
+                </div>
+                <div className="col-3">
+                  <div className="bg-info bg-opacity-25 w-100 rounded p-2 d-flex flex-column align-items-center">
+                    <i class="fas fa-utensils fs-1 fw-bold"></i>
+                    <div className="fs-5 fw-bold">Chiên</div>
+                    <div className="fs-6">Chế biến</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => handleAddStaff()}
-            >
-              <i className="fas fa-plus"></i> Thêm
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => handleDismiss()}
-            >
-              <i className="fas fa-ban"></i> Hủy
-            </button>
+        </div>
+      </div>
+      <div className="row mt-2">
+        <div className="col-4 pe-1">
+          <div className="bg-light rounded p-4">
+            <h4 className="text-primary fw-bold">Thành phần</h4>
+            <div>
+              <div className="d-flex gap-2">
+                <div>
+                  <i class="fas fa-check text-primary"></i>
+                </div>
+                <div>200 gram mì udon</div>
+              </div>
+              <div className="d-flex gap-2">
+                <div>
+                  <i class="fas fa-check text-primary"></i>
+                </div>
+                <div>
+                  1 muỗng cà phê Hạt nêm Knorr Thịt Thăn Xương Ống và Tủy
+                </div>
+              </div>
+              <div className="d-flex gap-2">
+                <div>
+                  <i class="fas fa-check text-primary"></i>
+                </div>
+                <div>200 gram mì udon</div>
+              </div>
+              <div className="d-flex gap-2">
+                <div>
+                  <i class="fas fa-check text-primary"></i>
+                </div>
+                <div>200 gram mì udon</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-8 ps-1">
+          <div className="bg-light rounded p-4">
+            <h4 className="text-primary fw-bold">Hướng dẫn</h4>
+            <div>
+              <div className="text-primary fw-bold">Bước 1:</div>
+              <div>Trộn</div>
+            </div>
           </div>
         </div>
       </div>

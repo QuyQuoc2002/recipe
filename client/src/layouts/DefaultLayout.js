@@ -8,7 +8,7 @@ const DefaultLayout = ({ children }) => {
       {/* <Loading /> */}
       <SideBar />
       <div className="content">
-        <NavBar />
+        {/* <NavBar /> */}
         {children}
       </div>
     </div>
