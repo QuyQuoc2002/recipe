@@ -1,5 +1,13 @@
 import * as NV01Repository from "./NV01Repository.js";
 
+export const hello = async (req, res) => {
+  try {
+    return res.status(200).json("Hello");
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+};
+
 export const getAllDish = async (req, res) => {
   try {
     const { search } = req.body;
