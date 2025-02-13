@@ -38,12 +38,46 @@ export const downloadBase64File = (
 export const convertFileToBase64 = (file, callback) => {
   const reader = new FileReader();
 
-  reader.onloadend = () => {
-    // `reader.result` contains the base64-encoded string
-    callback(reader.result);
+  reader.onload = (event) => {
+    const img = new Image();
+    img.src = event.target.result;
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Kích thước 4x3 (400x300 px có thể chỉnh)
+      const targetWidth = 1920;
+      const targetHeight = 1080;
+
+      // Tính toán giữ nguyên tỷ lệ
+      const scale = Math.max(
+        targetWidth / img.width,
+        targetHeight / img.height
+      );
+      const newWidth = img.width * scale;
+      const newHeight = img.height * scale;
+
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
+
+      // Xóa nền và vẽ lại hình ảnh
+      ctx.fillStyle = "white"; // Có thể đổi màu nền
+      ctx.fillRect(0, 0, targetWidth, targetHeight);
+      ctx.drawImage(
+        img,
+        (targetWidth - newWidth) / 2,
+        (targetHeight - newHeight) / 2,
+        newWidth,
+        newHeight
+      );
+
+      // Convert về Base64
+      const base64String = canvas.toDataURL("image/jpeg"); // Định dạng có thể là "image/png"
+      callback(base64String);
+    };
   };
 
-  // Read the file as a data URL, which will be a base64-encoded string
   reader.readAsDataURL(file);
 };
 

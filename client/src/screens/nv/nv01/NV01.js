@@ -8,12 +8,15 @@ const filterDefault = {
   levelId: null,
   catId: null,
   methId: null,
+  mainIngreId: null,
+  mainIngre: null,
 };
 
 const listFilterDefault = {
   level: null,
   cat: null,
   meth: null,
+  mainIngre: null,
 };
 
 const searchDefault = "";
@@ -184,20 +187,31 @@ const NV01 = () => {
             <div>
               <Select
                 className="border border-primary rounded text-primary"
-                isMulti
-                placeholder="Nguyên liệu..."
-                options={[
-                  { value: "chocolate", label: "Chocolate" },
-                  { value: "strawberry", label: "Strawberry" },
-                  { value: "vanilla", label: "Vanilla" },
-                ]}
+                placeholder="Nguyên liệu chính"
+                isClearable
+                value={
+                  filter.mainIngreId
+                    ? { value: filter.mainIngreId, label: filter.mainIngre }
+                    : null
+                }
+                options={listFilter?.mainIngre?.map((item) => ({
+                  value: item.id,
+                  label: item.name,
+                }))}
+                onChange={(option) => {
+                  valueChangeFilter(
+                    "mainIngreId",
+                    option ? option.value : null
+                  );
+                  valueChangeFilter("mainIngre", option ? option.label : null);
+                }}
               />
             </div>
           </div>
         </div>
         <div className="col-9 ps-1">
           <div className="bg-light rounded p-4">
-            <div className="row ">
+            <div className="row g-2">
               {listDish
                 ?.filter(
                   (item) => !filter.levelId || item.levelId === filter.levelId
@@ -205,6 +219,11 @@ const NV01 = () => {
                 ?.filter((item) => !filter.catId || item.catId === filter.catId)
                 ?.filter(
                   (item) => !filter.methId || item.methId === filter.methId
+                )
+                ?.filter(
+                  (item) =>
+                    !filter.mainIngreId ||
+                    item.mainIngreId === filter.mainIngreId
                 )
                 ?.map((dish, idx) => (
                   <div key={idx} className="col-4">

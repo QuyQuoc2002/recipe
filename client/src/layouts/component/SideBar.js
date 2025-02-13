@@ -11,10 +11,13 @@ const SideBar = () => {
         </Link>
         <div className="navbar-nav w-100">
           <Link to="/nv/nv01" className="nav-item nav-link">
-            <i className="fas fa-users me-2"></i>THỰC ĐƠN
+            <i className="fas fa-clipboard-list me-2"></i>THỰC ĐƠN
           </Link>
           <Link to="/cc/cc01" className="nav-item nav-link">
-            <i className="far fa-calendar-check"></i>CHẤM CÔNG
+            <i className="far fa-calendar-check me-2"></i>QUẢN LÍ MÓN ĂN
+          </Link>
+          <Link to="/ma/ma01" className="nav-item nav-link">
+            <i className="fas fa-plus me-2"></i>THÊM MÓN ĂN
           </Link>
         </div>
       </nav>

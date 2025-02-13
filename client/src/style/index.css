@@ -11,3 +11,7 @@
   height: 25rem;
   margin: 0 5px;
 }
+
+body {
+  overflow-x: hidden;
+}

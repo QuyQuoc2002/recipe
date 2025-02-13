@@ -1,8 +1,8 @@
 import express from "express";
-import { addStaff } from "./NV02Service.js";
+import { getDish } from "./NV02Service.js";
 
 const router = express.Router();
 
-router.post("/add-staff", addStaff);
+router.post("/get-dish", getDish);
 
 export default router;
